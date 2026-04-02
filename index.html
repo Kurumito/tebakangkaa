@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Tebak Angka Beruntung</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.5s;
+    }
+
+    body.dark {
+      background: linear-gradient(135deg, #232526, #414345);
+      color: white;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body.dark .container {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+    }
+
+    h1 { margin-bottom: 10px; }
+    p { color: #555; margin-bottom: 25px; }
+    body.dark p { color: #ccc; }
+
+    input[type="number"] {
+      padding: 12px;
+      font-size: 18px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .guess-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .guess-btn:hover { background-color: #43a047; }
+
+    .reward-btn {
+      background-color: #f39c12;
+      color: white;
+      display: none;
+    }
+
+    .reward-btn:hover { background-color: #e67e22; }
+
+    .dark-btn {
+      background-color: #999;
+      color: white;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #score {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    body.dark #score { color: #ccc; }
+  </style>
+</head>
+<body>
+
+  <audio id="bg-music" loop autoplay>
+    <source src="relaxingchillhop.mp3">
+  </audio>
+
+  <div class="container">
+    <h1>🎯 Tebak Angka Beruntung!</h1>
+    <p>Tebak angka dari 1–10. Kamu punya 3x kesempatan!</p>
+
+    <input type="number" id="guess" min="1" max="10" placeholder="Tebak angka...">
+    <br>
+    <button class="guess-btn" onclick="checkGuess()">Tebak Sekarang</button>
+
+    <div id="message"></div>
+    <div id="score">Kesempatan tersisa: 3</div>
+    <button class="reward-btn" id="rewardBtn" onclick="getReward()">🎁 Ambil Hadiahmu!</button>
+  </div>
+
+  <button class="dark-btn" onclick="toggleDarkMode()">🌓</button>
+
+  <audio id="winSound" src="winsound.mp3"></audio>
+  <audio id="failSound" src="failsound.mp3"></audio>
+  <audio id="failSound" src="failsound.mp3"></audio>
+
+  <script>
+  let luckyNumber = Math.floor(Math.random() * 10) + 1;
+  let attemptsLeft = 3;
+  let countdown = 5;
+  let countdownInterval = null;
+  let resetTimeout = null;
+
+  function checkGuess() {
+    const guess = parseInt(document.getElementById("guess").value);
+    const message = document.getElementById("message");
+    const rewardBtn = document.getElementById("rewardBtn");
+    const score = document.getElementById("score");
+    const winSound = document.getElementById("winSound");
+    const failSound = document.getElementById("failSound");
+    const relaxingchillhop = document.getElementById("relaxingchillhop");
+    if (isNaN(guess) || guess < 1 || guess > 10) {
+      message.textContent = "⚠️ Masukkan angka antara 1 sampai 10!";
+      return;
+    }
+
+    if (guess === luckyNumber) {
+      winSound.play();
+      message.textContent = "🎉 Selamat! Angkanya benar!";
+      rewardBtn.style.display = "inline-block";
+
+      countdown = 5;
+      score.textContent = `Game akan restart dalam ${countdown} detik...`;
+
+      countdownInterval = setInterval(() => {
+        countdown--;
+        score.textContent = `Game akan restart dalam ${countdown} detik...`;
+
+        if (countdown <= 0) {
+          clearInterval(countdownInterval);
+        }
+      }, 1000);
+
+      resetTimeout = setTimeout(resetGame, 5000);
+    } else {
+      attemptsLeft--;
+      rewardBtn.style.display = "none";
+      failSound.play();
+
+      if (attemptsLeft > 0) {
+        const clue = guess < luckyNumber ? "📉 Terlalu kecil!" : "📈 Terlalu besar!";
+        message.textContent = `❌ Salah! ${clue}`;
+        score.textContent = `Kesempatan tersisa: ${attemptsLeft}`;
+      } else {
+        message.textContent = `💀 Gagal! Angka yang benar adalah ${luckyNumber}.`;
+        score.textContent = "Game akan direset...";
+        resetTimeout = setTimeout(resetGame, 2500);
+      }
+    }
+  }
+
+  function resetGame() {
+    luckyNumber = Math.floor(Math.random() * 10) + 1;
+    attemptsLeft = 3;
+    document.getElementById("message").textContent = "";
+    document.getElementById("score").textContent = `Kesempatan tersisa: ${attemptsLeft}`;
+    document.getElementById("guess").value = "";
+    document.getElementById("rewardBtn").style.display = "none";
+    clearInterval(countdownInterval);
+    clearTimeout(resetTimeout);
+  }
+
+  function getReward() {
+    clearTimeout(resetTimeout);
+    clearInterval(countdownInterval);
+    window.location.href = "https://link.dana.id/danakaget?c=ssgmc9y99&r=gY208z&orderId=20251014101214355515010300166374144750363"; // ganti linkmu
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+  }
+</script>
+
+</body>
+</html>
