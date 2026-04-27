@@ -108,14 +108,14 @@
 
   <div class="container">
     <h1>🎯 Tebak Angka Beruntung!</h1>
-    <p>Tebak angka dari 1–10. Kamu punya 3x kesempatan!</p>
+    <p>Tebak angka dari 1–100. Kamu punya 5x kesempatan!</p>
 
-    <input type="number" id="guess" min="1" max="10" placeholder="Tebak angka...">
+    <input type="number" id="guess" min="1" max="100" placeholder="Tebak angka...">
     <br>
     <button class="guess-btn" onclick="checkGuess()">Tebak Sekarang</button>
 
     <div id="message"></div>
-    <div id="score">Kesempatan tersisa: 3</div>
+    <div id="score">Kesempatan tersisa: 5</div>
     <button class="reward-btn" id="rewardBtn" onclick="getReward()">🎁 Ambil Hadiahmu!</button>
   </div>
 
@@ -126,9 +126,9 @@
   <audio id="failSound" src="failsound.mp3"></audio>
 
   <script>
-  let luckyNumber = Math.floor(Math.random() * 10) + 1;
-  let attemptsLeft = 3;
-  let countdown = 5;
+  let luckyNumber = Math.floor(Math.random() * 100) + 1;
+  let attemptsLeft = 5;
+  let countdown = 6;
   let countdownInterval = null;
   let resetTimeout = null;
 
@@ -140,8 +140,8 @@
     const winSound = document.getElementById("winSound");
     const failSound = document.getElementById("failSound");
     const relaxingchillhop = document.getElementById("relaxingchillhop");
-    if (isNaN(guess) || guess < 1 || guess > 10) {
-      message.textContent = "⚠️ Masukkan angka antara 1 sampai 10!";
+    if (isNaN(guess) || guess < 1 || guess > 100) {
+      message.textContent = "⚠️ Masukkan angka antara 1 sampai 100!";
       return;
     }
 
@@ -150,7 +150,7 @@
       message.textContent = "🎉 Selamat! Angkanya benar!";
       rewardBtn.style.display = "inline-block";
 
-      countdown = 5;
+      countdown = 6;
       score.textContent = `Game akan restart dalam ${countdown} detik...`;
 
       countdownInterval = setInterval(() => {
@@ -181,8 +181,8 @@
   }
 
   function resetGame() {
-    luckyNumber = Math.floor(Math.random() * 10) + 1;
-    attemptsLeft = 3;
+    luckyNumber = Math.floor(Math.random() * 100) + 1;
+    attemptsLeft = 5;
     document.getElementById("message").textContent = "";
     document.getElementById("score").textContent = `Kesempatan tersisa: ${attemptsLeft}`;
     document.getElementById("guess").value = "";
@@ -194,7 +194,7 @@
   function getReward() {
     clearTimeout(resetTimeout);
     clearInterval(countdownInterval);
-    window.location.href = "https://link.dana.id/danakaget?c=ssgmc9y99&r=gY208z&orderId=20251014101214355515010300166374144750363"; // ganti linkmu
+    window.location.href = "https://link.dana.id/danakaget?c=s7veze2gl&r=gY208z&orderId=20260427101214535515010300166374175831723"; // ganti linkmu
   }
 
   function toggleDarkMode() {
